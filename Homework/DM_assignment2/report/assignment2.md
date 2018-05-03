@@ -93,10 +93,7 @@
               result[froz] = result[froz] + 1
       iterSet(prefixCopy, trans, pos + 1, result, True)
       iterSet(prefixCopy, trans, pos + 1, result, False)
-
-
-
-
+      
   if __name__ == '__main__':
 
       dataSet = loadDataSet()
@@ -112,7 +109,6 @@
       print(result.keys())
   ```
 
-  ​
 
 * **Apriori**
   代码参考自《机器学习实战》，做少许改动以兼容python3并应对本问题，相对复杂的部分有详细注释
@@ -417,13 +413,13 @@
 
 运行时间随最小支持度的减小的变化，下图展示了时间随支持度增长的变化，时间消耗都回随最小支持度的增长而增大，但是Apriori增大的幅度要远大于FP-growth
 
-<img src="D:\NEXT\DM_assignment2\report\compareTime.png" style="width:60%"/>
+<img src="D:\NEXT\GIT\DATA_MINING\DM_assignment2\report\compareTime.png" style="width:60%"/>
 
-<img src="D:\NEXT\DM_assignment2\report\AprioriTime.png" style="width:60%"/>
+<img src="D:\NEXT\GIT\DATA_MINING\DM_assignment2\report\AprioriTime.png" style="width:60%"/>
 
 
 
-<img src="D:\NEXT\DM_assignment2\report\FP-growth.png" style="width:60%"/>
+<img src="D:\NEXT\GIT\DATA_MINING\DM_assignment2\report\FP-growth.png" style="width:60%"/>
 
 ### 频繁项集数量
 
@@ -435,10 +431,55 @@
 | ----- | ----- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | 频繁项集数 | 13413 | 4206 | 2221 | 1388 | 989  | 742  | 574  | 472  | 383  | 320  |
 
-<img src="D:\NEXT\DM_assignment2\report\numItemSets.png" style="width:60%"/>
+<img src="D:\NEXT\GIT\DATA_MINING\DM_assignment2\report\numItemSets.png" style="width:60%"/>
+
+### 频繁项集挖掘结论
+
+* Groceries
+
+  选择不同的的最小支持度，并提取至少两个项的频繁项集，查看结果
+
+  ``` text
+  tropical fruit + whole milk
+  root vegetables + other vegetables
+  root vegetables + whole milk
+  other vegetables + yogurt
+  whole milk + yogurt
+  whole milk + soda
+  rolls/buns + other vegetables
+  rolls/buns + whole milk
+  whole milk + other vegetables
+  ```
+
+  选择minSupport=350可以得到上述结果。发现牛奶的购买频数很高，且经常与水果、蔬菜等类别的商品一同购买
+
+  ​
+
+* UNIX
+
+  以Unix0数据为例，选择不同的的最小支持度，并提取至少两个项的频繁项集，查看结果
+
+  ``` text
+  cd + ls
+  cd + <1> + ls
+  cd + <1>
+  finger + <1>
+  elm + exit
+  <1> + elm + exit
+  elm + <1>
+  exit + ls
+  <1> + exit + ls
+  <1> + ls
+  <1> + exit
+  ```
+
+  选择minSupport=120可以得到上述结果。可以发现`cd`经常与`ls`联用，`cd` `exit` `ls`等命令用得较多
 
 ## Conclusions
 
 **Apriori**算法在频繁模式挖掘的过程中，需要重复的查询原数据集，导致效率随着transaction的增多而大大降低
 
 **FP-growth**算法减少了很多重复的查询，但是需要消耗大量的内存来建立FP树以及条件PF树，面对大数据集时仍然需要在空间上做优化与调整
+
+
+

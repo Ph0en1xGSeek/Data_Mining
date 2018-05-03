@@ -180,7 +180,7 @@ def mineTree(inTree, headerTable, minSup, preFix, freqItemList):
 
 if __name__ == "__main__":
 
-    minSup = 300
+    minSup = 350
     dataSet = loadDataSet()
     dataMap = loadMap()
     initSet = createInitSet(dataSet)
