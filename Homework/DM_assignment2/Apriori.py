@@ -4,16 +4,16 @@ import json
 
 
 def loadDataSet():
-    # thing_arr = []
-    #
-    # with open('data/Groceries.txt', 'r') as f:
-    #     X = f.read()
-    #     thing_arr = json.loads(X)
-    #     f.close()
-    # return thing_arr
+    thing_arr = []
+    
+    with open('data/Groceries.txt', 'r') as f:
+        X = f.read()
+        thing_arr = json.loads(X)
+        f.close()
+    return thing_arr
 
 
-  return [[1,2,5], [2,4], [2,3], [1,2,4],[1,3], [2,3], [1,3], [1,2,3,5], [1,2,3]]
+#   return [[1,2,5], [2,4], [2,3], [1,2,4],[1,3], [2,3], [1,3], [1,2,3,5], [1,2,3]]
 
 def loadMap():
 
@@ -102,11 +102,46 @@ def apriori(dataSet, minSupport = 50):
     return L, supportData
 
 
+def generateRules(L, supportData, minConf=0.7):
+    bigRuleList = []
+    for i in range(1, len(L)):
+        for freqSet in L[i]:
+            Hl = [frozenset([item]) for item in freqSet]
+            if i > 1:
+                rulesFromConseq(freqSet, Hl, supportData, bigRuleList,
+                minConf)
+            else:
+                calcConf(freqSet, Hl, supportData, bigRuleList, minConf)
+    return bigRuleList
+
+def calcConf(freqSet, H, supportData, brl, minConf=0.7):
+    prunedH=[]
+    for conseq in H:
+        conf = supportData[freqSet] / supportData[freqSet-conseq]
+        if conf >= minConf:
+            print (freqSet-conseq, '--->', conseq, 'conf:', conf)
+            brl.append((freqSet-conseq, conseq, conf))
+            prunedH.append(conseq)
+    return prunedH
+
+def rulesFromConseq(freqSet, H, supportData, brl, minConf=0.7):
+    '''
+    递归扫描关联关系
+    少1个 少2个...
+    '''
+    m = len(H[0])
+    if len(freqSet) > (m+1):
+        Hmp1 = aprioriGen(H, m+1)
+        Hmp1 = calcConf(freqSet, Hmp1, supportData, brl, minConf)
+        if len(Hmp1) > 1:
+            rulesFromConseq(freqSet, Hmp1, supportData, brl, minConf)
+
+
 if __name__ == "__main__":
     # dataSet, dataMap = loadDataSet()
     dataSet = loadDataSet()
     start = time.time()
-    L, suppData = apriori(dataSet, minSupport=2)
+    L, suppData = apriori(dataSet, minSupport=100)
     end = time.time()
     cnt = 1
     for i in L:
@@ -114,5 +149,7 @@ if __name__ == "__main__":
         cnt += 1
     print('Apriori total time:', end-start, 's')
 
+    print("Generate Rule Begin:")
+    generateRules(L, suppData, minConf=0.3)
 
 
